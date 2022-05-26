@@ -3,7 +3,7 @@
 ## Number of ways 5 points can be divided among 5 groups
 
 ```
-Naively, there are 6 possible values for 5 positions which 
+There are 6 possible values for 5 positions which 
 gives us 6^5 = 7,776 possible combinations but many of those
 are invalid.
 

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import pdfUrl from "../assets/MR-31-Complete.pdf"
+import pdfUrl from "../assets/MR-31-Complete.pdf";
 export default {
   name: "RulesView",
   data() {
@@ -28,9 +28,7 @@ export default {
 
 <style>
 .rules-container {
-  min-height: 100vh;
   display: flex;
-  align-items: center;
 }
 .rules {
   margin: 2em auto;

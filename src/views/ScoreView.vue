@@ -9,3 +9,9 @@ import CalculatePoints from "@/components/CalculatePoints.vue";
     <CalculatePoints />
   </main>
 </template>
+
+<style scoped>
+main {
+  font-size: smaller;
+}
+</style>

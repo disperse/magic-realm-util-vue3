@@ -1,75 +1,107 @@
 <script setup>
-import { useCategoriesStore } from "@/stores/scoreTable";
+import useCategoriesStore from "@/stores/scoreTable";
+import AgGrid from "@/components/AgGrid.vue";
+import { scoreTableColumnDefs } from "@/conf/ag-grid";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Card from "primevue/card";
+import InputNumber from "primevue/inputnumber";
+
 const store = useCategoriesStore();
+
+const onCellEditComplete = (event) => {
+  let { data, newValue, field } = event;
+  switch (field) {
+    case "points":
+      store.getCategory(data.category).points = newValue;
+      break;
+    case "recorded":
+      store.getCategory(data.category).recorded = newValue;
+      break;
+    case "owned":
+      store.getCategory(data.category).owned = newValue;
+      break;
+  }
+};
 </script>
 
 <template>
-  <div>
-    <table>
-      <thead>
-        <tr>
-          <td style="text-align: right">Category</td>
-          <td>Points</td>
-          <td></td>
-          <td>Needed</td>
-          <td>Recorded</td>
-          <td>Owned</td>
-          <td>Total</td>
-          <td>Score</td>
-          <td>Basic</td>
-          <td>Bonus</td>
-          <td>Final</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="c in store.categories" v-bind:key="c.category">
-          <td style="text-align: right">{{ c.category }}</td>
-          <td>
-            <input type="number" min="0" max="5" v-model="c.points" />
-          </td>
-          <td style="text-align: left">times {{ c.multiplier }}</td>
-          <td>{{ c.needed }}</td>
-          <td>
-            <input
-              v-if="c.hasRecorded"
-              type="number"
-              min="-999"
-              max="999"
-              v-model="c.recorded"
-            />
-          </td>
-          <td>
-            <input
-              v-if="c.hasOwned"
-              type="number"
-              min="-999"
-              max="999"
-              v-model="c.owned"
-            />
-          </td>
-          <td>{{ c.recorded + c.owned }}</td>
-          <td>{{ c.score }}</td>
-          <td>{{ c.basicScore }}</td>
-          <td>{{ c.bonusScore }}</td>
-          <td>{{ c.basicScore + c.bonusScore }}</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td style="text-align: right">Totals</td>
-          <td>{{ store.categories.reduce((pv, cv) => pv + cv.points, 0) }}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>{{ store.getBasicScoreTotal }}</td>
-          <td>{{ store.getBonusScoreTotal }}</td>
-          <td>{{ store.getFinalScore }}</td>
-        </tr>
-      </tfoot>
-    </table>
+  <div class="main">
+    <Card>
+      <template #title> Score calculator </template>
+      <template #content>
+        <DataTable
+          :value="store.getCategories"
+          responsiveLayout="scroll"
+          stripedRows
+          editMode="cell"
+          @cellEditComplete="onCellEditComplete"
+        >
+          <Column field="category" header="Category"></Column>
+          <Column field="points" header="Points">
+            <template #editor="{ data, field }">
+              <InputNumber v-model="data[field]" />
+            </template>
+            <template #footer>
+              <div>
+                {{ store.getPointsTotal }}
+              </div>
+            </template>
+          </Column>
+          <Column field="multiplier" header=""></Column>
+          <Column field="needed" header="Needed"></Column>
+          <Column field="recorded" header="Recorded">
+            <template #editor="slotProps">
+              <InputNumber
+                v-if="slotProps.data.hasRecorded"
+                v-model="slotProps.data[slotProps.field]"
+              />
+            </template>
+            <template #body="slotProps">
+              <div v-if="slotProps.data.hasRecorded">
+                {{ slotProps.data.recorded }}
+              </div>
+            </template>
+          </Column>
+          <Column field="owned" header="Owned">
+            <template #editor="slotProps">
+              <InputNumber
+                v-if="slotProps.data.hasOwned"
+                v-model="slotProps.data[slotProps.field]"
+              />
+            </template>
+            <template #body="slotProps">
+              <div v-if="slotProps.data.hasOwned">
+                {{ slotProps.data.owned }}
+              </div>
+            </template>
+          </Column>
+          <Column field="total" header="Total"></Column>
+          <Column field="score" header="Score"></Column>
+          <Column field="basicScore" header="Basic">
+            <template #footer>
+              <div>
+                {{ store.getBasicScoreTotal }}
+              </div>
+            </template>
+          </Column>
+          <Column field="bonusScore" header="Bonus">
+            <template #footer>
+              <div>
+                {{ store.getBonusScoreTotal }}
+              </div>
+            </template>
+          </Column>
+          <Column field="finalScore" header="Final">
+            <template #footer>
+              <div>
+                {{ store.getFinalScore }}
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
   </div>
 </template>
 
@@ -80,25 +112,10 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  padding: 2em 2em 1em 2em;
+}
 table {
-  margin: 2em auto;
-  border: 1px solid #fff;
-}
-
-thead td,
-tfoot td {
-  font-variant-caps: small-caps;
-  font-weight: bold;
-}
-
-td {
-  /* top right bottom left */
-  padding: 0.2em 0.5em 0.2em 0.5em;
-  border: none;
-  border-collapse: collapse;
-}
-
-tbody tr:nth-child(odd) {
-  background-color: #222222;
+  margin: 0 auto;
 }
 </style>

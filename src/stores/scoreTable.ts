@@ -1,51 +1,57 @@
 import { defineStore } from "pinia";
 import Categories from "@/types/Categories";
 import Category from "@/types/Category";
+import PointArray from "@/types/PointArray";
 import combinations from "../functions/combinations";
 
-export const useCategoriesStore = defineStore("category", {
+export default defineStore({
+  id: "category",
   state: () => {
     return {
       categories: [
-        new Category(Categories.GreatTreasures, 1, true, false),
-        new Category(Categories.Spells, 2),
-        new Category(Categories.Fame, 10, true),
-        new Category(Categories.Notoriety, 20, true),
-        new Category(Categories.Gold, 30, true),
+        new Category(0, Categories.GreatTreasures, 1, true, false),
+        new Category(1, Categories.Spells, 2),
+        new Category(2, Categories.Fame, 10, true),
+        new Category(3, Categories.Notoriety, 20, true),
+        new Category(4, Categories.Gold, 30, true),
       ] as Category[],
-      pointArrays: [] as number[][],
+      pointArrays: [] as PointArray[],
       generator: combinations([0, 1, 2, 3, 4, 5], 5),
     };
   },
   getters: {
+    getCategories: (state) => state.categories,
+    getPointArrays: (state) => state.pointArrays,
     getCategory: (state) => {
       return (needle: Categories) =>
         state.categories.find((haystack) => needle === haystack.category);
     },
-    getBasicScoreTotal: (state) =>
-      state.categories.reduce((pv, cv) => pv + cv.basicScore, 0),
-    getBonusScoreTotal: (state) =>
-      state.categories.reduce((pv, cv) => pv + cv.bonusScore, 0),
+    getPointsTotal(): number {
+      const reducer = (pv: number, cv: Category) => {
+        return pv + cv.score;
+      };
+      return this.categories.reduce(reducer, 0);
+    },
+    getBasicScoreTotal(): number {
+      const reducer = (pv: number, cv: Category) => {
+        return pv + cv.basicScore;
+      };
+      return this.categories.reduce(reducer, 0);
+    },
+    getBonusScoreTotal(): number {
+      const reducer = (pv: number, cv: Category) => {
+        return pv + cv.bonusScore;
+      };
+      return this.categories.reduce(reducer, 0);
+    },
     getFinalScore(): number {
       return this.getBasicScoreTotal + this.getBonusScoreTotal;
-    },
-    getPointArrays: (state) => {
-      return state.pointArrays
-        .map((pa) => {
-          let finalScore = 0;
-          for (let i = 0; i < pa.length; i++) {
-            const copyCat = state.categories[i].copy(pa[i]);
-            finalScore += copyCat.finalScore;
-          }
-          return [...pa, finalScore];
-        })
-        .sort((a, b) => b[5] - a[5]);
     },
   },
   actions: {
     calculateNext() {
       const { value, done } = this.generator.next();
-      if (!done) {
+      if (value && value.length && !done) {
         this.addPoints(value);
       }
     },
@@ -60,10 +66,9 @@ export const useCategoriesStore = defineStore("category", {
       } while (go);
     },
     addPoints(pointArray: number[]) {
-      for (let i = 0; i < pointArray.length; i++) {
-        this.categories[i].points = pointArray[i];
-      }
-      this.pointArrays.push(pointArray);
+      this.pointArrays.push(
+        new PointArray(this.pointArrays.length, pointArray, this.categories)
+      );
     },
   },
 });

@@ -1,6 +1,7 @@
 import type Categories from "@/types/Categories";
 
 export default class Category {
+  id: number;
   category: Categories;
   multiplier: number;
   hasRecorded: boolean;
@@ -9,7 +10,14 @@ export default class Category {
   recorded: number;
   owned: number;
 
-  constructor(category: Categories, multiplier: number, hasOwned?: boolean, hasRecorded?: boolean) {
+  constructor(
+    id: number,
+    category: Categories,
+    multiplier: number,
+    hasOwned?: boolean,
+    hasRecorded?: boolean
+  ) {
+    this.id = id;
     this.category = category;
     this.multiplier = multiplier;
     this.hasRecorded = hasRecorded ?? true;
@@ -18,27 +26,40 @@ export default class Category {
     this.recorded = 0;
     this.owned = 0;
   }
-  copy(pts?: number) {
-    const copyCat = new Category(this.category, this.multiplier, this.hasOwned);
-    copyCat.points = pts ?? this.points;
-    copyCat.recorded = this.recorded;
-    copyCat.owned = this.owned;
-    return copyCat;
+  /* Class methods */
+  private calcNeeded(points: number) {
+    return points * this.multiplier
   }
+  private calcScore(points: number) {
+    const score = this.recorded + this.owned - this.calcNeeded(points);
+    return score < 0 ? score * 3 : score;
+  }
+  private calcBasicScore(points: number) {
+    return Math.floor(this.calcScore(points) / this.multiplier);
+  }
+  private calcBonusScore(points: number) {
+    return this.calcBasicScore(points) * points;
+  }
+  public calcFinalScore(points: number) {
+    return this.calcBasicScore(points) + this.calcBonusScore(points);
+  }
+  /* Getters */
   public get needed() {
-    return this.points * this.multiplier;
+    return this.calcNeeded(this.points);
   }
   public get score() {
-    const score = this.recorded + this.owned - this.needed;
-    return (score < 0) ? score * 3 : score;
+    return this.calcScore(this.points);
+  }
+  public get total() {
+    return this.recorded + this.owned;
   }
   public get basicScore() {
-    return Math.floor(this.score / this.multiplier);
+    return this.calcBasicScore(this.points);
   }
   public get bonusScore() {
-    return this.basicScore * this.points;
+    return this.calcBonusScore(this.points);
   }
   public get finalScore() {
-    return this.basicScore + this.bonusScore;
+    return this.calcFinalScore(this.points);
   }
 }

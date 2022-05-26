@@ -4,7 +4,6 @@ enum Categories {
   Fame = "Fame",
   Notoriety = "Notoriety",
   Gold = "Gold",
-  Undefined = "Undefined",
 }
 
 export default Categories;

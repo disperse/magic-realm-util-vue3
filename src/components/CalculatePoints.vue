@@ -1,42 +1,44 @@
 <script setup>
-import { useCategoriesStore } from "@/stores/scoreTable";
+import useCategoriesStore from "@/stores/scoreTable";
+import { calculatePointsColumnDefs } from "@/conf/ag-grid";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Card from "primevue/card";
+import Button from "primevue/button";
+
 const store = useCategoriesStore();
 </script>
 
 <template>
-  <div>
-    <p>Calculate the best ways to allocate Victory Points based on the score recorded.</p>
-    <p>
-      <button @click="store.calculateNext()">Calculate next</button>
-      <button style="margin-left: 2em" @click="store.calculateAll()">
-        Calculate all
-      </button>
-    </p>
-    <table>
-      <thead>
-        <tr>
-          <td
-            v-for="c in store.categories"
-            v-bind:key="c.category"
-            style="text-align: right"
-          >
-            {{ c.category }}
-          </td>
-          <td>Final</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="a in store.getPointArrays" v-bind:key="a.join('')">
-          <td
-            style="text-align: right"
-            v-for="(i, index) in a"
-            v-bind:key="`${a.join('')}-${index}`"
-          >
-            {{ i }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="main">
+    <Card>
+      <template #title>
+        Point distributions
+      </template>
+      <template #subtitle>
+        Calculate the best ways to allocate Victory Points based on the score recorded.
+      </template>
+      <template #content>
+        <Button label="Calculate next" @click="store.calculateNext()" />
+        <Button
+          label="Calculate all"
+          style="margin-left: 2em"
+          @click="store.calculateAll()"
+        />
+        <DataTable
+          :value="store.getPointArrays"
+          responsiveLayout="scroll"
+          stripedRows
+        >
+          <Column field="greatTreasures" header="Great Treasures"></Column>
+          <Column field="spells" header="Spells"></Column>
+          <Column field="fame" header="Fame"></Column>
+          <Column field="notoriety" header="Notoriety"></Column>
+          <Column field="gold" header="Gold"></Column>
+          <Column field="totalScore" header="Final" :sortable="true"></Column>
+        </DataTable>
+      </template>
+    </Card>
   </div>
 </template>
 
@@ -47,24 +49,7 @@ export default {
 </script>
 
 <style scoped>
-table {
-  margin: 2em auto;
-  border: 1px solid #fff;
-}
-
-thead td {
-  font-variant-caps: small-caps;
-  font-weight: bold;
-}
-
-td {
-  /* top right bottom left */
-  padding: 0.2em 0.5em 0.2em 0.5em;
-  border: none;
-  border-collapse: collapse;
-}
-
-tbody tr:nth-child(odd) {
-  background-color: #222222;
+.main {
+  padding: 1em 2em 1em 2em;
 }
 </style>
