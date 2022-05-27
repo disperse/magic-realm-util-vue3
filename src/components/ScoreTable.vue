@@ -30,6 +30,11 @@ const onCellEditComplete = (event) => {
       <template #title> Score calculator </template>
       <template #content>
         <Button label="Random" @click="store.setRandomValues()" />
+        <Button
+          style="margin-left: 1em"
+          label="Toggle torture test"
+          @click="store.toggleTortureTest()"
+        />
         <DataTable
           :value="store.getCategories"
           responsiveLayout="scroll"
@@ -50,9 +55,7 @@ const onCellEditComplete = (event) => {
           </Column>
           <Column field="multiplier" header="">
             <template #body="slotProps">
-              <div>
-                times {{ slotProps.data.multiplier }}
-              </div>
+              <div>times {{ slotProps.data.multiplier }}</div>
             </template>
           </Column>
           <Column field="needed" header="Needed"></Column>

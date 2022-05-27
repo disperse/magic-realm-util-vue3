@@ -1,6 +1,5 @@
 <script setup>
 import useCategoriesStore from "@/stores/scoreTable";
-import { calculatePointsColumnDefs } from "@/conf/ag-grid";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Card from "primevue/card";
@@ -12,17 +11,16 @@ const store = useCategoriesStore();
 <template>
   <div class="main">
     <Card>
-      <template #title>
-        Point distributions
-      </template>
+      <template #title> Point distributions </template>
       <template #subtitle>
-        Calculate the best ways to allocate Victory Points based on the score recorded.
+        Calculate the best ways to allocate Victory Points based on the score
+        recorded.
       </template>
       <template #content>
         <Button label="Calculate next" @click="store.calculateNext()" />
         <Button
           label="Calculate all"
-          style="margin-left: 2em"
+          style="margin-left: 1em"
           @click="store.calculateAll()"
         />
         <DataTable

@@ -29,6 +29,11 @@ C(9,5)
 362,880 / 2880 = 126
 ```
 
+## Notes
+
+I couldn't get ag-grid working reactively with Vue 3, but PrimeVue's DataTable component was easy to get working.
+Vuetify is not yet ready for Vue 3 development but the estimated launch date is "May 2022".
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup

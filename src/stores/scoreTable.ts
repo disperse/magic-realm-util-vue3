@@ -14,9 +14,10 @@ export default defineStore({
         new Category(2, Categories.Fame, 10, true),
         new Category(3, Categories.Notoriety, 20, true),
         new Category(4, Categories.Gold, 30, true),
-      ] as Category[],
+      ],
       pointArrays: [] as PointArray[],
       generator: combinations([0, 1, 2, 3, 4, 5], 5),
+      tortureTest: false,
     };
   },
   getters: {
@@ -69,18 +70,35 @@ export default defineStore({
       this.categories
         .sort(() => (Math.random() < 0 ? -1 : 1))
         .forEach((category) => {
-          const points = Math.min(Math.floor(Math.random() * 5), remaining);
+          const points = Math.floor(Math.random() * (remaining + 1));
           category.points = points;
           remaining -= points;
           if (category.hasOwned) {
-            category.owned =
-              Math.floor(((Math.random() * 8) - 2) * category.multiplier);
+            category.owned = Math.floor(
+              (Math.random() * 8 - 2) * category.multiplier
+            );
           }
           if (category.hasRecorded) {
-            category.recorded =
-              Math.floor(((Math.random() * 8) - 2) * category.multiplier);
+            category.recorded = Math.floor(
+              (Math.random() * 8 - 2) * category.multiplier
+            );
           }
         });
+    },
+    toggleTortureTest() {
+      const randomTime = () => {
+        this.setRandomValues();
+        if (this.tortureTest) {
+          const timeOut = Math.round(Math.random() * 150) + 50;
+          setTimeout(randomTime, timeOut);
+        }
+      };
+      if (this.tortureTest) {
+        this.tortureTest = false;
+      } else {
+        this.tortureTest = true;
+        randomTime();
+      }
     },
   },
 });
