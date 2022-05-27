@@ -29,14 +29,20 @@ export default defineStore({
     },
     getPointsTotal: (state) => {
       const reducer = (pv: number, cv: Category) => pv + cv.points;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       return state.categories.reduce(reducer, 0);
     },
     getBasicScoreTotal(): number {
       const reducer = (pv: number, cv: Category) => pv + cv.basicScore;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       return this.categories.reduce(reducer, 0);
     },
     getBonusScoreTotal(): number {
       const reducer = (pv: number, cv: Category) => pv + cv.bonusScore;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       return this.categories.reduce(reducer, 0);
     },
     getFinalScore(): number {
@@ -62,6 +68,8 @@ export default defineStore({
     },
     addPoints(pointArray: number[]) {
       this.pointArrays.push(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         new PointArray(this.pointArrays.length, pointArray, this.categories)
       );
     },

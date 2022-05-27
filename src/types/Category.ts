@@ -28,7 +28,7 @@ export default class Category {
   }
   /* Class methods */
   private calcNeeded(points: number) {
-    return points * this.multiplier
+    return points * this.multiplier;
   }
   private calcScore(points: number) {
     const score = this.recorded + this.owned - this.calcNeeded(points);

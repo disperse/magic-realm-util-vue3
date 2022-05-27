@@ -35,6 +35,9 @@ export default class PointArray {
     return this.points[Categories.Gold];
   }
   public get totalScore(): number {
-    return this.categories.reduce((pv, cv) => pv + cv.calcFinalScore(this.points[cv.category]), 0);
+    return this.categories.reduce(
+      (pv, cv) => pv + cv.calcFinalScore(this.points[cv.category]),
+      0
+    );
   }
 }

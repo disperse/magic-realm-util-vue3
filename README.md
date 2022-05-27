@@ -36,6 +36,55 @@ Vuetify is not yet ready for Vue 3 development but the estimated launch date is 
 
 This template should help get you started developing with Vue 3 in Vite.
 
+npm run dev loads in 165ms
+
+```
+Static assets:
+   dist/assets/magic-realm-cover.252765fc.jpeg                     187.60 KiB
+   dist/assets/MR-31-Complete.dfe083d9.pdf                         1756.38 KiB
+
+Material design theme related 622.61 KiB: 
+   Icons 460.84 KiB: 
+   dist/assets/primeicons.c9eaf535.eot                             65.25 KiB
+   dist/assets/primeicons.788dba0a.ttf                             65.08 KiB
+   dist/assets/primeicons.feb68bf6.woff                            65.16 KiB
+   dist/assets/primeicons.2ab98f70.svg                             265.35 KiB
+
+   Fonts and color pallet 161.77 KiB:
+   dist/assets/roboto-v20-latin-ext_latin-700.8d9364a0.woff2       22.19 KiB
+   dist/assets/roboto-v20-latin-ext_latin-500.fa074f87.woff2       22.20 KiB
+   dist/assets/roboto-v20-latin-ext_latin-regular.b86b128b.woff2   22.11 KiB
+   dist/assets/roboto-v20-latin-ext_latin-regular.e70a908b.woff    28.36 KiB
+   dist/assets/roboto-v20-latin-ext_latin-500.d092ad8e.woff        28.39 KiB
+   dist/assets/roboto-v20-latin-ext_latin-700.e24c2752.woff        28.41 KiB
+   dist/assets/color.473bc8ca.png                                  10.11 KiB
+   
+Code (with code splitting) 500.54 KiB (105.1 KiB gzip):
+   Index 319.23 KiB (64.89 KiB gzip):
+   dist/index.html                                                 0.42 KiB
+   dist/assets/index.767607bf.js                                   104.34 KiB / gzip: 39.91 KiB
+   dist/assets/index.65737da3.css                                  214.47 KiB / gzip: 24.56 KiB
+   
+   RulesView 0.53KiB (0.41 KiB gzip):
+   dist/assets/RulesView.32faf62c.js                               0.48 KiB / gzip: 0.34 KiB
+   dist/assets/RulesView.0a397d28.css                              0.05 KiB / gzip: 0.07 KiB
+   
+   ScoreView 180.78 KiB (39.8 KiB gzip):
+   dist/assets/ScoreView.50dd354e.css                              0.16 KiB / gzip: 0.13 KiB
+   dist/assets/ScoreView.8eb6a5c5.js                               180.62 KiB / gzip: 39.67 KiB
+```
+
+```
+Normal use results:
+  0.0 - 8.7% CPU
+  170 - 206MB Memory
+   
+Torture test results:
+   43.3 - 89.1% CPU
+   683 - 1,607 MB Memory
+```
+
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
