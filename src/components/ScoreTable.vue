@@ -1,11 +1,10 @@
 <script setup>
 import useCategoriesStore from "@/stores/scoreTable";
-import AgGrid from "@/components/AgGrid.vue";
-import { scoreTableColumnDefs } from "@/conf/ag-grid";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Card from "primevue/card";
 import InputNumber from "primevue/inputnumber";
+import Button from "primevue/button";
 
 const store = useCategoriesStore();
 
@@ -30,6 +29,7 @@ const onCellEditComplete = (event) => {
     <Card>
       <template #title> Score calculator </template>
       <template #content>
+        <Button label="Random" @click="store.setRandomValues()" />
         <DataTable
           :value="store.getCategories"
           responsiveLayout="scroll"
@@ -48,7 +48,13 @@ const onCellEditComplete = (event) => {
               </div>
             </template>
           </Column>
-          <Column field="multiplier" header=""></Column>
+          <Column field="multiplier" header="">
+            <template #body="slotProps">
+              <div>
+                times {{ slotProps.data.multiplier }}
+              </div>
+            </template>
+          </Column>
           <Column field="needed" header="Needed"></Column>
           <Column field="recorded" header="Recorded">
             <template #editor="slotProps">

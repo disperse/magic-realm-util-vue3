@@ -26,22 +26,16 @@ export default defineStore({
       return (needle: Categories) =>
         state.categories.find((haystack) => needle === haystack.category);
     },
-    getPointsTotal(): number {
-      const reducer = (pv: number, cv: Category) => {
-        return pv + cv.score;
-      };
-      return this.categories.reduce(reducer, 0);
+    getPointsTotal: (state) => {
+      const reducer = (pv: number, cv: Category) => pv + cv.points;
+      return state.categories.reduce(reducer, 0);
     },
     getBasicScoreTotal(): number {
-      const reducer = (pv: number, cv: Category) => {
-        return pv + cv.basicScore;
-      };
+      const reducer = (pv: number, cv: Category) => pv + cv.basicScore;
       return this.categories.reduce(reducer, 0);
     },
     getBonusScoreTotal(): number {
-      const reducer = (pv: number, cv: Category) => {
-        return pv + cv.bonusScore;
-      };
+      const reducer = (pv: number, cv: Category) => pv + cv.bonusScore;
       return this.categories.reduce(reducer, 0);
     },
     getFinalScore(): number {
@@ -69,6 +63,24 @@ export default defineStore({
       this.pointArrays.push(
         new PointArray(this.pointArrays.length, pointArray, this.categories)
       );
+    },
+    setRandomValues() {
+      let remaining = 5;
+      this.categories
+        .sort(() => (Math.random() < 0 ? -1 : 1))
+        .forEach((category) => {
+          const points = Math.min(Math.floor(Math.random() * 5), remaining);
+          category.points = points;
+          remaining -= points;
+          if (category.hasOwned) {
+            category.owned =
+              Math.floor(((Math.random() * 8) - 2) * category.multiplier);
+          }
+          if (category.hasRecorded) {
+            category.recorded =
+              Math.floor(((Math.random() * 8) - 2) * category.multiplier);
+          }
+        });
     },
   },
 });
