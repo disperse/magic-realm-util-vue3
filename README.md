@@ -80,6 +80,10 @@ Normal use results:
   170 - 206MB Memory
    
 Torture test results:
+   12.1 - 27.6% CPU
+   199 - 252 MB Memory
+   
+Torture test results with auto-sorting:
    43.3 - 89.1% CPU
    683 - 1,607 MB Memory
 ```

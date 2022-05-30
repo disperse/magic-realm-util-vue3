@@ -1,9 +1,9 @@
 <template>
-  <div class="home-container">
+  <main>
     <div class="cover">
       <img :src="imgUrl" alt="Magic Realm box cover" width="500" />
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -18,8 +18,8 @@ export default {
 };
 </script>
 
-<style>
-.home-container {
+<style scoped>
+main {
   display: flex;
 }
 .cover {

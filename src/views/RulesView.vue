@@ -1,5 +1,5 @@
 <template>
-  <div class="rules-container">
+  <main>
     <div class="rules">
       <object
         :data="pdfUrl"
@@ -11,7 +11,7 @@
         <a :href="pdfUrl">Magic Realm Rules</a>
       </object>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -26,8 +26,8 @@ export default {
 };
 </script>
 
-<style>
-.rules-container {
+<style scoped>
+main {
   display: flex;
 }
 .rules {
