@@ -1,28 +1,29 @@
 <script setup lang="ts">
 import vueLogo from "./assets/vue-logo.svg";
 import { RouterLink, RouterView } from "vue-router";
-import "primevue/resources/themes/md-dark-indigo/theme.css";
-import "primevue/resources/primevue.min.css";
-import "primeicons/primeicons.css";
+import { darkTheme } from "naive-ui";
+import { NConfigProvider } from "naive-ui";
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <h1>
-        <img :src="vueLogo" alt="Vue logo" width="48" />
-        Vue.js
-      </h1>
-    </div>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/home">Home</RouterLink>
-        <RouterLink to="/score">Scoring</RouterLink>
-        <RouterLink to="/rules">Rules</RouterLink>
-      </nav>
-    </div>
-  </header>
-  <RouterView />
+  <NConfigProvider :theme="darkTheme">
+    <header>
+      <div class="wrapper">
+        <h2>
+          <img :src="vueLogo" alt="Vue logo" width="48" />
+          Vue.js
+        </h2>
+      </div>
+      <div class="wrapper">
+        <nav>
+          <RouterLink to="/home">Home</RouterLink>
+          <RouterLink to="/score">Scoring</RouterLink>
+          <RouterLink to="/rules">Rules</RouterLink>
+        </nav>
+      </div>
+    </header>
+    <RouterView />
+  </NConfigProvider>
 </template>
 
 <style>
@@ -46,12 +47,13 @@ a {
   text-decoration: none;
   color: white;
   padding: 0 1em 0 1em;
+  font-size: x-large;
 }
 a.router-link-active {
   color: rgb(101, 182, 135);
   text-decoration: underline;
 }
-h1 {
+h2 {
   color: rgb(101, 182, 135);
 }
 </style>

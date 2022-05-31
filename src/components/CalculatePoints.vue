@@ -1,46 +1,107 @@
-<script setup>
+<script setup lang="ts">
 import useCategoriesStore from "@/stores/scoreTable";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import Card from "primevue/card";
-import Button from "primevue/button";
+import {
+  NButton,
+  NCard,
+  NIcon,
+  NTable,
+  NThead,
+  NTbody,
+  NTr,
+  NTh,
+  NTd,
+} from "naive-ui";
+import { ArrowUpwardSharp, ArrowDownwardSharp } from "@vicons/material";
+import type { PointArray } from "@/types/PointArray";
+import { computed, reactive } from "vue";
 
 const store = useCategoriesStore();
+
+const state = reactive({
+  sortFinal: "desc",
+});
+
+const toggleSort = () => {
+  state.sortFinal = state.sortFinal === "desc" ? "asc" : "desc";
+};
+
+function sortByFinal(arr: Array<PointArray>): Array<PointArray> {
+  return [...arr].sort((a, b) => {
+    return state.sortFinal === "desc"
+      ? b.totalScore - a.totalScore
+      : a.totalScore - b.totalScore;
+  });
+}
+
+let sortedArray = computed(() => sortByFinal(store.getPointArrays));
 </script>
 
 <template>
   <div class="main">
-    <Card>
-      <template #title> Point distributions </template>
-      <template #subtitle>
-        Calculate the best ways to allocate Victory Points based on the score
-        recorded.
-      </template>
-      <template #content>
-        <Button label="Calculate next" @click="store.calculateNext()" />
-        <Button
-          label="Calculate all"
+    <NCard>
+      <template #header> Point distributions </template>
+      <template #header-extra>
+        <NButton @click="store.calculateNext()" type="primary">
+          Calculate next
+        </NButton>
+        <NButton
           style="margin-left: 1em"
           @click="store.calculateAll()"
-        />
-        <DataTable
-          :value="store.getPointArrays"
-          responsiveLayout="scroll"
-          stripedRows
+          type="primary"
         >
-          <Column field="greatTreasures" header="Great Treasures"></Column>
-          <Column field="spells" header="Spells"></Column>
-          <Column field="fame" header="Fame"></Column>
-          <Column field="notoriety" header="Notoriety"></Column>
-          <Column field="gold" header="Gold"></Column>
-          <Column field="totalScore" header="Final" :sortable="true"></Column>
-        </DataTable>
+          Calculate all
+        </NButton>
       </template>
-    </Card>
+      <div>
+        <p>
+          Calculate the best ways to allocate Victory Points based on the score
+          recorded.
+        </p>
+      </div>
+      <div>
+        <NTable>
+          <NThead>
+            <NTr>
+              <NTh>Great treasures</NTh>
+              <NTh>Spells</NTh>
+              <NTh>Fame</NTh>
+              <NTh>Notoriety</NTh>
+              <NTh>Gold</NTh>
+              <NTh @click="toggleSort">
+                Final
+                <NIcon v-if="state.sortFinal === 'desc'">
+                  <ArrowDownwardSharp />
+                </NIcon>
+                <NIcon v-else>
+                  <ArrowUpwardSharp />
+                </NIcon>
+              </NTh>
+            </NTr>
+          </NThead>
+          <NTbody>
+            <NTr v-for="row in sortedArray" :key="row.id">
+              <NTd
+                v-for="field in [
+                  'greatTreasures',
+                  'spells',
+                  'fame',
+                  'notoriety',
+                  'gold',
+                  'totalScore',
+                ]"
+                :key="`${row.id}-${field}`"
+              >
+                {{ row[field] }}
+              </NTd>
+            </NTr>
+          </NTbody>
+        </NTable>
+      </div>
+    </NCard>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "CalculatePoints",
 };

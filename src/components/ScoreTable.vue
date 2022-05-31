@@ -1,13 +1,104 @@
-<script setup>
+<script setup lang="ts">
 import useCategoriesStore from "@/stores/scoreTable";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import Card from "primevue/card";
-import InputNumber from "primevue/inputnumber";
-import Button from "primevue/button";
+import type ColumnDef from "@/types/ColumnDef";
+import {
+  NCard,
+  NButton,
+  NTable,
+  NThead,
+  NTbody,
+  NTr,
+  NTh,
+  NTd,
+} from "naive-ui";
+import {
+  calcNeeded,
+  calcScore,
+  calcBasicScore,
+  calcBonusScore,
+  calcFinalScore,
+} from "@/types/Category";
+import { reactive } from "vue";
 
 const store = useCategoriesStore();
+const state = reactive({
+  tortureTest: false,
+});
 
+const getTimeOut = () => Math.round(Math.random() * 150) + 50;
+
+const randomTime = () => {
+  store.setRandomValues();
+  if (state.tortureTest) {
+    setTimeout(randomTime, getTimeOut());
+  }
+};
+
+const toggleTortureTest = () => {
+  if (state.tortureTest) {
+    state.tortureTest = false;
+  } else {
+    state.tortureTest = true;
+    randomTime();
+  }
+};
+
+const columnDefs: Array<ColumnDef> = [
+  {
+    label: "Category",
+    valueGetter: (cat) => cat.name,
+  },
+  {
+    label: "Points",
+    valueGetter: (cat) => cat.points,
+    totalGetter: () => store.getPointsTotal,
+  },
+  {
+    label: "",
+    valueGetter: (cat) => `times ${cat.multiplier}`,
+  },
+  {
+    label: "Needed",
+    valueGetter: (cat) => calcNeeded(cat, cat.points),
+  },
+  {
+    label: "Recorded",
+    showIf: (cat) => cat.hasRecorded,
+    valueGetter: (cat) => cat.recorded,
+    editable: true,
+  },
+  {
+    label: "Owned",
+    showIf: (cat) => cat.hasOwned,
+    valueGetter: (cat) => cat.owned,
+    editable: true,
+  },
+  {
+    label: "Total",
+    valueGetter: (cat) => cat.recorded + cat.owned,
+  },
+  {
+    label: "Score",
+    valueGetter: (cat) => calcScore(cat, cat.points),
+  },
+  {
+    label: "Basic",
+    valueGetter: (cat) => calcBasicScore(cat, cat.points),
+    totalGetter: () => store.getBasicScoreTotal,
+  },
+  {
+    label: "Bonus",
+    valueGetter: (cat) => calcBonusScore(cat, cat.points),
+    totalGetter: () => store.getBonusScoreTotal,
+  },
+  {
+    label: "Final",
+    valueGetter: (cat) => calcFinalScore(cat, cat.points),
+    totalGetter: () => store.getFinalScoreTotal,
+  },
+];
+
+/*
 const onCellEditComplete = (event) => {
   let { data, newValue, field } = event;
   switch (field) {
@@ -22,99 +113,52 @@ const onCellEditComplete = (event) => {
       break;
   }
 };
+ */
 </script>
 
 <template>
   <div class="main">
-    <Card>
-      <template #title> Score calculator </template>
-      <template #content>
-        <Button label="Random" @click="store.setRandomValues()" />
-        <Button
-          style="margin-left: 1em"
-          label="Toggle torture test"
-          @click="store.toggleTortureTest()"
-        />
-        <DataTable
-          :value="store.getCategories"
-          responsiveLayout="scroll"
-          stripedRows
-          editMode="cell"
-          @cellEditComplete="onCellEditComplete"
+    <NCard>
+      <template #header>Score calculator</template>
+      <template #header-extra>
+        <NButton @click="store.setRandomValues()" type="primary"
+          >Random</NButton
         >
-          <Column field="category" header="Category"></Column>
-          <Column field="points" header="Points">
-            <template #editor="{ data, field }">
-              <InputNumber v-model="data[field]" />
-            </template>
-            <template #footer>
-              <div>
-                {{ store.getPointsTotal }}
-              </div>
-            </template>
-          </Column>
-          <Column field="multiplier" header="">
-            <template #body="slotProps">
-              <div>times {{ slotProps.data.multiplier }}</div>
-            </template>
-          </Column>
-          <Column field="needed" header="Needed"></Column>
-          <Column field="recorded" header="Recorded">
-            <template #editor="slotProps">
-              <InputNumber
-                v-if="slotProps.data.hasRecorded"
-                v-model="slotProps.data[slotProps.field]"
-              />
-            </template>
-            <template #body="slotProps">
-              <div v-if="slotProps.data.hasRecorded">
-                {{ slotProps.data.recorded }}
-              </div>
-            </template>
-          </Column>
-          <Column field="owned" header="Owned">
-            <template #editor="slotProps">
-              <InputNumber
-                v-if="slotProps.data.hasOwned"
-                v-model="slotProps.data[slotProps.field]"
-              />
-            </template>
-            <template #body="slotProps">
-              <div v-if="slotProps.data.hasOwned">
-                {{ slotProps.data.owned }}
-              </div>
-            </template>
-          </Column>
-          <Column field="total" header="Total"></Column>
-          <Column field="score" header="Score"></Column>
-          <Column field="basicScore" header="Basic">
-            <template #footer>
-              <div>
-                {{ store.getBasicScoreTotal }}
-              </div>
-            </template>
-          </Column>
-          <Column field="bonusScore" header="Bonus">
-            <template #footer>
-              <div>
-                {{ store.getBonusScoreTotal }}
-              </div>
-            </template>
-          </Column>
-          <Column field="finalScore" header="Final">
-            <template #footer>
-              <div>
-                {{ store.getFinalScore }}
-              </div>
-            </template>
-          </Column>
-        </DataTable>
+        <NButton
+          type="primary"
+          style="margin-left: 1em"
+          @click="toggleTortureTest"
+          >Toggle torture test</NButton
+        >
       </template>
-    </Card>
+      <template #default>
+        <NTable>
+          <NThead>
+            <NTr>
+              <NTh v-for="col in columnDefs" :key="col.label">
+                {{ col.label }}
+              </NTh>
+            </NTr>
+          </NThead>
+          <NTbody>
+            <NTr v-for="cat in store.getCategories" :key="cat.name">
+              <NTd v-for="col in columnDefs" :key="`${col.label}-${cat.name}`">
+                {{ col.valueGetter(cat) }}
+              </NTd>
+            </NTr>
+            <NTr>
+              <NTd v-for="col in columnDefs" :key="`total-${col.label}`">
+                {{ col.totalGetter ? col.totalGetter() : "" }}
+              </NTd>
+            </NTr>
+          </NTbody>
+        </NTable>
+      </template>
+    </NCard>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "ScoreTable",
 };

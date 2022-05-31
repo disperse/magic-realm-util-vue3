@@ -88,6 +88,15 @@ Torture test results with auto-sorting:
    683 - 1,607 MB Memory
 ```
 
+```
+Switching to a lighter-weight component library and writing things more funcationally helped
+a lot with the CPU but not memory:
+
+Torture test results:
+  22.8 - 25.9%
+
+```
+
 
 ## Recommended IDE Setup
 
